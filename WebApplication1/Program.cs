@@ -1,5 +1,3 @@
-using System;
-using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MontageAPI.Data;
 using MontageAPI.Services;
- 
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -83,28 +81,14 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Инициализация БД и создание админа
+// === ПРИМЕНЕНИЕ МИГРАЦИЙ ПРИ ЗАПУСКЕ (для разработки) ===
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.EnsureCreated();
 
-    if (!db.Users.Any())
-    {
-        db.Users.Add(new User
-        {
-            Login = "admin",
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123"),
-            Role = "Admin"
-        });
-        db.Users.Add(new User
-        {
-            Login = "worker1",
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("worker123"),
-            Role = "Worker"
-        });
-        db.SaveChanges();
-    }
+    // Применяем все ожидающие миграции
+    // В продакшене лучше использовать dotnet ef database update или скрипты
+    db.Database.Migrate();
 }
 
 if (app.Environment.IsDevelopment())
@@ -122,4 +106,4 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-app.Run();
+app.Run(); 

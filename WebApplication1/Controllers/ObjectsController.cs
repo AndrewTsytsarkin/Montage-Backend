@@ -25,9 +25,6 @@ namespace WebApplication1.Controllers
         private readonly AppDbContext _context;
 
         public ObjectsController(AppDbContext context) { _context = context; }
-
-
-
         [HttpGet]
         public async Task<IActionResult> GetObjects()
         {
