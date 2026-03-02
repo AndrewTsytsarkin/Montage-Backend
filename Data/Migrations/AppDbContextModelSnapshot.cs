@@ -118,7 +118,7 @@ namespace Data.Migrations
                             Id = 1,
                             FullName = "Админ Админыч",
                             Login = "admin",
-                            PasswordHash = "$2a$11$dc1VxlASa9fsQ33sus.lLeABXBYn.p5XeLFC00.DYJr6bIe8wesdi",
+                            PasswordHash = "$2a$11$4ZXfO5UsvpBNA9Fl8jUeEu/XmriTz3xZXCRI8.GCsLO4nwy5j0ogK",
                             Role = "Admin"
                         },
                         new
@@ -126,7 +126,7 @@ namespace Data.Migrations
                             Id = 2,
                             FullName = "Иванов Д.Д.",
                             Login = "worker1",
-                            PasswordHash = "$2a$11$..WwhVyRJ01jvphb1KjViuC7OpnYWN6UcqUFH6zr3o1XbIpUTnmGi",
+                            PasswordHash = "$2a$11$OdIYJM4VqppAp3DcazL05eIghvh.hj8khQQWoFxQ37d9lz3.s4e9G",
                             Role = "Worker"
                         },
                         new
@@ -134,7 +134,7 @@ namespace Data.Migrations
                             Id = 3,
                             FullName = "Сидоров И.Д.",
                             Login = "worker2",
-                            PasswordHash = "$2a$11$WdQpOz794/D36vGVJo2S3uxLJ4wuk9DZVRN5rR2LJf5yN2mzIac.2",
+                            PasswordHash = "$2a$11$JCVtCVJVF0iZFjLTLV44wuC6TUM2IJ5dhBnahxwtqU8R5.awjWZNy",
                             Role = "Worker"
                         });
                 });

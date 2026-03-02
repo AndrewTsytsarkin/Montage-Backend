@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -166,9 +166,9 @@ namespace Data.Migrations
                 columns: new[] { "Id", "FullName", "Login", "PasswordHash", "Role" },
                 values: new object[,]
                 {
-                    { 1, "Админ Админыч", "admin", "$2a$11$dc1VxlASa9fsQ33sus.lLeABXBYn.p5XeLFC00.DYJr6bIe8wesdi", "Admin" },
-                    { 2, "Иванов Д.Д.", "worker1", "$2a$11$..WwhVyRJ01jvphb1KjViuC7OpnYWN6UcqUFH6zr3o1XbIpUTnmGi", "Worker" },
-                    { 3, "Сидоров И.Д.", "worker2", "$2a$11$WdQpOz794/D36vGVJo2S3uxLJ4wuk9DZVRN5rR2LJf5yN2mzIac.2", "Worker" }
+                    { 1, "Админ Админыч", "admin", "$2a$11$4ZXfO5UsvpBNA9Fl8jUeEu/XmriTz3xZXCRI8.GCsLO4nwy5j0ogK", "Admin" },
+                    { 2, "Иванов Д.Д.", "worker1", "$2a$11$OdIYJM4VqppAp3DcazL05eIghvh.hj8khQQWoFxQ37d9lz3.s4e9G", "Worker" },
+                    { 3, "Сидоров И.Д.", "worker2", "$2a$11$JCVtCVJVF0iZFjLTLV44wuC6TUM2IJ5dhBnahxwtqU8R5.awjWZNy", "Worker" }
                 });
 
             migrationBuilder.InsertData(
