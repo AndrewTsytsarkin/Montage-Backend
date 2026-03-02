@@ -43,6 +43,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactApp", policy =>
     {
         policy.WithOrigins(
+            "https://tsytsarkin.ru",
             "http://localhost:5173",  // Vite по умолчанию
             "http://localhost:3000",  // ≈сли вдруг будете использовать Create React App
             "http://127.0.0.1:5173"
