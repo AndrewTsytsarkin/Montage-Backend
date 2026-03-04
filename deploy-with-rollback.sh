@@ -13,7 +13,7 @@ HEALTH_RETRIES=5
 
 echo "=== 🚀 Backend Deploy with Rollback started at $(date) ==="
 
-cd "$PROJECT_DIR"
+cd /opt/myapp/backend
 
 # ============================================
 # 1. Проверяем, что MySQL работает
