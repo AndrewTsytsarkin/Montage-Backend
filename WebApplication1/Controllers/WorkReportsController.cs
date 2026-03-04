@@ -4,50 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MontageAPI.Data;
 
-public class UserDto
-    {
-    public int Id { get; set; }
-    public string Login { get; set; } = string.Empty;
-    public string? FullName { get; set; }
-    public string Role { get; set; } = string.Empty;
-}
-public class WorkReportDto
-{
-    public int Id { get; set; }
-
-    public string? UserFullName { get; set; }  // ✅ НОВОЕ
-    public int UserId { get; set; }
-    public string UserLogin { get; set; } = string.Empty;
-    public int ObjectId { get; set; }
-    public string ObjectName { get; set; } = string.Empty;
-    public int WorkTypeId { get; set; }
-    public string WorkTypeName { get; set; } = string.Empty;
-    public string WorkTypeType { get; set; } = string.Empty;
-    public string WorkTypeSubtype { get; set; } = string.Empty;
-    public DateTime WorkDate { get; set; }
-    public decimal Quantity { get; set; }
-    public string Unit { get; set; } = string.Empty;
-    public decimal PricePerUnit { get; set; }
-    public decimal TotalPrice { get; set; }
-    public string? Comment { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime? UpdatedAt { get; set; }
-}
-
-public class CreateWorkReportDto
-{
-    public int ObjectId { get; set; }
-    public int WorkTypeId { get; set; }
-    public DateTime WorkDate { get; set; }
-    public decimal Quantity { get; set; }
-    public string? Comment { get; set; }
-}
-
-public class UpdateWorkReportDto
-{
-    public decimal? Quantity { get; set; }
-    public string? Comment { get; set; }
-}
 
 namespace WebApplication1.Controllers
 {

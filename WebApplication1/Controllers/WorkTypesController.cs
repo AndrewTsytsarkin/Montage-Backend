@@ -5,17 +5,7 @@ using MontageAPI.Data;
 
 namespace WebApplication1.Controllers
 {
-    public class WorkTypeDto
-    {
-        public int Id { get; set; }
-        public string Type { get; set; } = string.Empty;
-        public string Subtype { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
-        public string Unit { get; set; } = string.Empty;
-        public decimal PricePerUnit { get; set; }  // ✅ Должно быть!
-
-    }
-
+   
     [ApiController]
     [Route("api/[controller]")]
     [Authorize] // Только авторизованные пользователи

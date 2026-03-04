@@ -6,17 +6,6 @@ using MontageAPI.Data;
 
 namespace WebApplication1.Controllers
 {
-
-    public class LoginDto
-    {
-        public string Login { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-    }
-
-
-
-
-
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
