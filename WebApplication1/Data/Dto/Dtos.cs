@@ -1,10 +1,13 @@
-﻿public class Dtos
+﻿ 
+public class UserDto
 {
     public int Id { get; set; }
     public string Login { get; set; } = string.Empty;
     public string? FullName { get; set; }
     public string Role { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
 }
+
 public class WorkReportDto
 {
     public int Id { get; set; }
@@ -60,3 +63,21 @@ public class LoginDto
     public string Password { get; set; } = string.Empty;
 }
 
+
+
+
+
+public class CreateUserDto
+{
+    public string Login { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+    public string? FullName { get; set; }
+    public string Role { get; set; } = "Worker";
+}
+
+public class UpdateUserDto
+{
+    public string? FullName { get; set; }
+    public string? Role { get; set; }
+    public string? Password { get; set; }
+}

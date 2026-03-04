@@ -71,13 +71,35 @@ public class WorkReport
 public class User
 {
     public int Id { get; set; }
+
+    /// <summary>
+    /// Логин пользователя (уникальный)
+    /// </summary>
     public string Login { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Хэш пароля
+    /// </summary>
     public string PasswordHash { get; set; } = string.Empty;
-    public string Role { get; set; } = "Worker"; // Admin или Worker
+
+    /// <summary>
+    /// Роль: Admin или Worker
+    /// </summary>
+    public string Role { get; set; } = "Worker";
+
     /// <summary>
     /// ФИО пользователя (Фамилия Имя Отчество)
     /// </summary>
-    public string FullName { get; set; }
+    public string? FullName { get; set; }
+
+    /// <summary>
+    /// Дата создания пользователя
+    /// </summary>
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    /// <summary>
+    /// Назначения на объекты
+    /// </summary>
     public ICollection<UserObjectAssignment> Assignments { get; set; } = new List<UserObjectAssignment>();
 }
 public class UserObjectAssignment
@@ -230,6 +252,7 @@ public class AppDbContext : DbContext
                 Login = "admin",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123"),
                 Role = "Admin",
+                CreatedAt = DateTime.UtcNow,
                 FullName = "Админ Админыч"
 
             },
@@ -239,6 +262,8 @@ public class AppDbContext : DbContext
                 Login = "worker1",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("worker123"),
                 Role = "Worker",
+                CreatedAt = DateTime.UtcNow,
+
                 FullName = "Иванов Д.Д."
             },
             new User
@@ -247,6 +272,8 @@ public class AppDbContext : DbContext
                 Login = "worker2",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("worker123"),
                 Role = "Worker",
+                CreatedAt = DateTime.UtcNow,
+
                 FullName = "Сидоров И.Д."
 
             }
