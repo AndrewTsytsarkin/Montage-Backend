@@ -92,6 +92,12 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
+app.MapGet("/api/health", () => Results.Ok(new
+{
+    status = "healthy",
+    timestamp = DateTime.UtcNow
+}));
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

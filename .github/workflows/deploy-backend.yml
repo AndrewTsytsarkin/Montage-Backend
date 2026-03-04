@@ -31,11 +31,11 @@ jobs:
           script: |
             echo "=== Starting backend deployment at $(date) ==="
             
-            # # Обновляем код
-            # cd /opt/myapp/backend
-            # git pull origin main
+            # Обновляем код
+            cd /opt/myapp/backend
+            git pull origin main
             
-            # # Запускаем скрипт деплоя с откатом
-            # ./deploy-with-rollback.sh
+            # Запускаем скрипт деплоя с откатом
+            ./deploy-with-rollback.sh
             
-            # echo "=== Backend deployment finished at $(date) ==="
+            echo "=== Backend deployment finished at $(date) ==="
