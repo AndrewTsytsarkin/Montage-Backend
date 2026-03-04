@@ -36,7 +36,7 @@ public class AuthService
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Role, user.Role),
+            new Claim("role", user.Role),
             new Claim("Login", user.Login),
             new Claim("FullName", user.FullName ?? string.Empty)  
         };

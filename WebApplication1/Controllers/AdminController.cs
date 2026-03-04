@@ -1,4 +1,4 @@
-using System.Security.Claims;
+п»їusing System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +16,7 @@ namespace WebApplication1.Controllers
         public AdminController(AppDbContext context) => _context = context;
 
         /// <summary>
-        /// Получить всех пользователей (только Admin)
+        /// РџРѕР»СѓС‡РёС‚СЊ РІСЃРµС… РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ (С‚РѕР»СЊРєРѕ Admin)
         /// </summary>
         [HttpGet("users")]
         public async Task<IActionResult> GetAllUsers()
@@ -37,18 +37,18 @@ namespace WebApplication1.Controllers
         }
 
         /// <summary>
-        /// Создать нового пользователя (только Admin)
+        /// РЎРѕР·РґР°С‚СЊ РЅРѕРІРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (С‚РѕР»СЊРєРѕ Admin)
         /// </summary>
         [HttpPost("users")]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserDto dto)
         {
-            // Проверка: логин уже существует
+            // РџСЂРѕРІРµСЂРєР°: Р»РѕРіРёРЅ СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
             if (await _context.Users.AnyAsync(u => u.Login == dto.Login))
-                return BadRequest(new { message = "Пользователь с таким логином уже существует" });
+                return BadRequest(new { message = "РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃ С‚Р°РєРёРј Р»РѕРіРёРЅРѕРј СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚" });
 
-            // Проверка: роль должна быть Admin или Worker
+            // РџСЂРѕРІРµСЂРєР°: СЂРѕР»СЊ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ Admin РёР»Рё Worker
             if (dto.Role != "Admin" && dto.Role != "Worker")
-                return BadRequest(new { message = "Недопустимая роль" });
+                return BadRequest(new { message = "РќРµРґРѕРїСѓСЃС‚РёРјР°СЏ СЂРѕР»СЊ" });
 
             var user = new User
             {
@@ -66,12 +66,13 @@ namespace WebApplication1.Controllers
             {
                 id = user.Id,
                 login = user.Login,
-                message = "Пользователь создан"
+                role = user.Role,      // вњ… Р РћР›Р¬ Р’ РћРўР’Р•РўР•
+                message = "РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃРѕР·РґР°РЅ"
             });
         }
 
         /// <summary>
-        /// Обновить пользователя (только Admin)
+        /// РћР±РЅРѕРІРёС‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (С‚РѕР»СЊРєРѕ Admin)
         /// </summary>
         [HttpPut("users/{id}")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDto dto)
@@ -80,10 +81,10 @@ namespace WebApplication1.Controllers
             if (user == null)
                 return NotFound();
 
-            // Нельзя редактировать самого себя через этот метод (опционально)
+            // РќРµР»СЊР·СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ СЃР°РјРѕРіРѕ СЃРµР±СЏ С‡РµСЂРµР· СЌС‚РѕС‚ РјРµС‚РѕРґ (РѕРїС†РёРѕРЅР°Р»СЊРЅРѕ)
             var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
             if (user.Id == currentUserId)
-                return BadRequest(new { message = "Для редактирования своего профиля используйте другой endpoint" });
+                return BadRequest(new { message = "Р”Р»СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ СЃРІРѕРµРіРѕ РїСЂРѕС„РёР»СЏ РёСЃРїРѕР»СЊР·СѓР№С‚Рµ РґСЂСѓРіРѕР№ endpoint" });
 
             if (!string.IsNullOrEmpty(dto.FullName))
                 user.FullName = dto.FullName;
@@ -96,11 +97,11 @@ namespace WebApplication1.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Пользователь обновлён" });
+            return Ok(new { message = "РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ РѕР±РЅРѕРІР»С‘РЅ" });
         }
 
         /// <summary>
-        /// Удалить пользователя (только Admin)
+        /// РЈРґР°Р»РёС‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (С‚РѕР»СЊРєРѕ Admin)
         /// </summary>
         [HttpDelete("users/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
@@ -109,27 +110,27 @@ namespace WebApplication1.Controllers
             if (user == null)
                 return NotFound();
 
-            // Нельзя удалить самого себя
+            // РќРµР»СЊР·СЏ СѓРґР°Р»РёС‚СЊ СЃР°РјРѕРіРѕ СЃРµР±СЏ
             var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
             if (user.Id == currentUserId)
-                return BadRequest(new { message = "Нельзя удалить самого себя" });
+                return BadRequest(new { message = "РќРµР»СЊР·СЏ СѓРґР°Р»РёС‚СЊ СЃР°РјРѕРіРѕ СЃРµР±СЏ" });
 
-            // Нельзя удалить последнего админа
+            // РќРµР»СЊР·СЏ СѓРґР°Р»РёС‚СЊ РїРѕСЃР»РµРґРЅРµРіРѕ Р°РґРјРёРЅР°
             if (user.Role == "Admin")
             {
                 var adminCount = await _context.Users.CountAsync(u => u.Role == "Admin");
                 if (adminCount <= 1)
-                    return BadRequest(new { message = "Нельзя удалить последнего администратора" });
+                    return BadRequest(new { message = "РќРµР»СЊР·СЏ СѓРґР°Р»РёС‚СЊ РїРѕСЃР»РµРґРЅРµРіРѕ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР°" });
             }
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Пользователь удалён" });
+            return Ok(new { message = "РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ СѓРґР°Р»С‘РЅ" });
         }
 
         /// <summary>
-        /// Получить статистику (только Admin)
+        /// РџРѕР»СѓС‡РёС‚СЊ СЃС‚Р°С‚РёСЃС‚РёРєСѓ (С‚РѕР»СЊРєРѕ Admin)
         /// </summary>
         [HttpGet("stats")]
         public async Task<IActionResult> GetStats()
