@@ -22,7 +22,7 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           # SSH подключение
-          host: ${{ secrets.VDC_HOST }}
+          host: ${{ secrets.VDS_HOST }}
           username: ${{ secrets.VDC_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
