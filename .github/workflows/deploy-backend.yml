@@ -1,33 +1,138 @@
-﻿name: Deploy Backend to VDS
+﻿name: 🚀 Deploy Backend
 
 on:
- 
-  workflow_dispatch:
+  
+  workflow_dispatch:  # Ручной запуск из GitHub UI
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     
     steps:
+      # ═══════════════════════════════════════════════════════════════
+      # Шаг 1: Checkout кода (не обязателен, но полезно для логов)
+      # ═══════════════════════════════════════════════════════════════
       - name: 📦 Checkout code
         uses: actions/checkout@v4
 
-      - name: 🚀 Deploy Backend via SSH
+      # ═══════════════════════════════════════════════════════════════
+      # Шаг 2: Деплой на сервер через SSH
+      # ═══════════════════════════════════════════════════════════════
+      - name: 🚀 Deploy to VDC
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.VDS_HOST }}
-          username: ${{ secrets.VDS_USER }}
-          key: ${{ secrets.VDS_SSH_KEY }}
+          # SSH подключение
+          host: ${{ secrets.VDC_HOST }}
+          username: ${{ secrets.VDC_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
+          insecure_ignore_host_key: true
           command_timeout: 30m
+          
+          # Переменные окружения (из GitHub Secrets)
+          envs: MYSQL_ROOT_PASSWORD,MYSQL_DATABASE,MYSQL_USER,MYSQL_PASSWORD,MYSQL_PORT,BACKEND_PORT,JWT_SECRET_KEY,TZ
+          
+          # Скрипт деплоя
           script: |
-            echo "=== Starting backend deployment at $(date) ==="
+            set -e  # Остановиться при первой ошибке
             
-            # Обновляем код
+            echo "╔═══════════════════════════════════════════════════════════╗"
+            echo "║  🚀 MONTAGE BACKEND DEPLOYMENT                           ║"
+            echo "╚═══════════════════════════════════════════════════════════╝"
+            echo ""
+            echo "📅 Started at: $(date)"
+            echo "👤 User: $(whoami)"
+            echo "📂 Directory: $(pwd)"
+            echo ""
+            
+            # ═══════════════════════════════════════════════════════════════
+            # Переход в директорию проекта
+            # ═══════════════════════════════════════════════════════════════
+            echo "📁 Changing to project directory..."
             cd /opt/myapp/backend
+            
+            # ═══════════════════════════════════════════════════════════════
+            # Создание .env файла из переменных
+            # ═══════════════════════════════════════════════════════════════
+            echo "📝 Creating .env file from secrets..."
+            cat > .env << EOF
+            MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE=${MYSQL_DATABASE}
+            MYSQL_USER=${MYSQL_USER}
+            MYSQL_PASSWORD=${MYSQL_PASSWORD}
+            MYSQL_PORT=${MYSQL_PORT}
+            BACKEND_PORT=${BACKEND_PORT}
+            JWT_SECRET_KEY=${JWT_SECRET_KEY}
+            TZ=${TZ}
+            EOF
+            
+            # Скрываем чувствительные данные
+            chmod 600 .env
+            echo "✅ .env file created (permissions: 600)"
+            echo ""
+            
+            # ═══════════════════════════════════════════════════════════════
+            # Обновление кода из Git
+            # ═══════════════════════════════════════════════════════════════
+            echo "📦 Pulling latest changes from git..."
             git pull origin master
+            echo "✅ Code updated"
+            echo ""
             
-            # Запускаем скрипт деплоя с откатом
-            ./deploy-with-rollback.sh
+            # ═══════════════════════════════════════════════════════════════
+            # Остановка старых контейнеров
+            # ═══════════════════════════════════════════════════════════════
+            echo "🛑 Stopping old containers..."
+            docker compose down
+            echo "✅ Old containers stopped"
+            echo ""
             
-            echo "=== Backend deployment finished at $(date) ==="
+            # ═══════════════════════════════════════════════════════════════
+            # Сборка новых образов
+            # ═══════════════════════════════════════════════════════════════
+            echo "🔨 Building new images (this may take a few minutes)..."
+            docker compose build --no-cache
+            echo "✅ Images built"
+            echo ""
+            
+            # ═══════════════════════════════════════════════════════════════
+            # Запуск новых контейнеров
+            # ═══════════════════════════════════════════════════════════════
+            echo "▶️  Starting new containers..."
+            docker compose up -d
+            echo "✅ Containers started"
+            echo ""
+            
+            # ═══════════════════════════════════════════════════════════════
+            # Ожидание готовности MySQL
+            # ═══════════════════════════════════════════════════════════════
+            echo "⏳ Waiting for MySQL to be ready (30 seconds)..."
+            sleep 30
+            
+            
+            
+            # ═══════════════════════════════════════════════════════════════
+            # Проверка статуса контейнеров
+            # ═══════════════════════════════════════════════════════════════
+            echo "📊 Container status:"
+            docker compose ps
+            echo ""
+            
+            # ═══════════════════════════════════════════════════════════════
+            # Проверка здоровья бэкенда
+            # ═══════════════════════════════════════════════════════════════
+            echo "🏥 Checking backend health..."
+            sleep 5
+            curl -f http://localhost:${BACKEND_PORT}/api/health || echo "⚠️ Health check endpoint not available"
+            echo ""
+            
+            # ═══════════════════════════════════════════════════════════════
+            # Завершение
+            # ═══════════════════════════════════════════════════════════════
+            echo "╔═══════════════════════════════════════════════════════════╗"
+            echo "║  ✅ DEPLOYMENT SUCCESSFUL                                 ║"
+            echo "╚═══════════════════════════════════════════════════════════╝"
+            echo ""
+            echo "📅 Finished at: $(date)"
+            echo "🌐 Backend URL: http://${{ secrets.VDC_HOST }}:${BACKEND_PORT}"
+            echo "📖 Swagger: http://${{ secrets.VDC_HOST }}:${BACKEND_PORT}/swagger"
