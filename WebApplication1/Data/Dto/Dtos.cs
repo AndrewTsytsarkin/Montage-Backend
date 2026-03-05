@@ -81,3 +81,50 @@ public class UpdateUserDto
     public string? Role { get; set; }
     public string? Password { get; set; }
 }
+
+
+// Для отображения объекта
+public class ProjectObjectDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
+    public string Status { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public DateTime CreatedAt { get; set; }
+
+    // Список назначенных пользователей
+    public List<AssignedUserDto> AssignedUsers { get; set; } = new();
+
+    // Список всех доступных пользователей (для назначения)
+    public List<AvailableUserDto> AvailableUsers { get; set; } = new();
+}
+
+// Пользователь, назначенный на объект
+public class AssignedUserDto
+{
+    public int UserId { get; set; }
+    public string Login { get; set; } = string.Empty;
+    public string? FullName { get; set; }
+}
+
+// Пользователь, доступный для назначения
+public class AvailableUserDto
+{
+    public int Id { get; set; }
+    public string Login { get; set; } = string.Empty;
+    public string? FullName { get; set; }
+    public bool IsAssigned { get; set; }  // Уже назначен на этот объект?
+}
+
+// Для создания/обновления объекта
+public class CreateUpdateObjectDto
+{
+    public string Name { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
+    public string Status { get; set; } = "В работе";
+    public string? Description { get; set; }
+
+    // IDs пользователей для назначения
+    public List<int>? AssignedUserIds { get; set; }
+}

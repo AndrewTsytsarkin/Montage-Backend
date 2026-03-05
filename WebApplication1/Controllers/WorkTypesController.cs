@@ -5,7 +5,6 @@ using MontageAPI.Data;
 
 namespace WebApplication1.Controllers
 {
-   
     [ApiController]
     [Route("api/[controller]")]
     [Authorize] // Только авторизованные пользователи

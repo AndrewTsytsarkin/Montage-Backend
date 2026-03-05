@@ -115,6 +115,13 @@ public class ProjectObject
     public string Name { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     public string Status { get; set; } = "New";
+    public string Description { get; set; } = string.Empty;
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set; }
+
+    public ICollection<WorkReport> WorkReports { get; set; } = new List<WorkReport>();
+
     public ICollection<UserObjectAssignment> Assignments { get; set; } = new List<UserObjectAssignment>();
 }
 public class WorkType
