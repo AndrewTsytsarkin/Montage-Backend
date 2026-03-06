@@ -81,19 +81,56 @@ namespace WebApplication1.Controllers
             if (user == null)
                 return NotFound();
 
-            // Нельзя редактировать самого себя через этот метод (опционально)
+            // Нельзя редактировать самого себя через этот метод
             var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
             if (user.Id == currentUserId)
                 return BadRequest(new { message = "Для редактирования своего профиля используйте другой endpoint" });
 
+            // ✅ Обновление логина (если предоставлен)
+            if (!string.IsNullOrEmpty(dto.Login))
+            {
+                // Проверка: логин уже существует у другого пользователя
+                var loginExists = await _context.Users.AnyAsync(u => u.Login == dto.Login && u.Id != id);
+                if (loginExists)
+                    return BadRequest(new { message = "Пользователь с таким логином уже существует" });
+
+                // Проверка: формат логина (минимум 3 символа, только буквы/цифры/подчёркивание)
+                if (dto.Login.Length < 3)
+                    return BadRequest(new { message = "Логин должен содержать минимум 3 символа" });
+
+                if (!System.Text.RegularExpressions.Regex.IsMatch(dto.Login, @"^[a-zA-Z0-9_]+$"))
+                    return BadRequest(new { message = "Логин может содержать только буквы, цифры и подчёркивание" });
+
+                user.Login = dto.Login;
+            }
+
+            // ✅ Обновление пароля (если предоставлен)
+            if (!string.IsNullOrEmpty(dto.Password))
+            {
+                // Проверка: минимальная длина пароля
+                if (dto.Password.Length < 6)
+                    return BadRequest(new { message = "Пароль должен содержать минимум 6 символов" });
+
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+            }
+
+            // Обновление ФИО
             if (!string.IsNullOrEmpty(dto.FullName))
                 user.FullName = dto.FullName;
 
+            // Обновление роли
             if (!string.IsNullOrEmpty(dto.Role) && (dto.Role == "Admin" || dto.Role == "Worker"))
-                user.Role = dto.Role;
+            {
+                // Нельзя удалить последнего админа
+                if (user.Role == "Admin" && dto.Role == "Worker")
+                {
+                    var adminCount = await _context.Users.CountAsync(u => u.Role == "Admin");
+                    if (adminCount <= 1)
+                        return BadRequest(new { message = "Нельзя понизить последнего администратора" });
+                }
 
-            if (!string.IsNullOrEmpty(dto.Password))
-                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+                user.Role = dto.Role;
+            }
 
             await _context.SaveChangesAsync();
 
