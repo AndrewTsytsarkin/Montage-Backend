@@ -45,7 +45,7 @@ services:
       - JwtSettings__Audience=MontageClient
       - TZ=Europe/Moscow
     ports:
-      - "${BACKEND_PORT:-7001}:8080"
+      - "127.0.0.1:${BACKEND_PORT:-7001}:8080"
     depends_on:
       mysql:
         condition: service_healthy
